@@ -72,4 +72,41 @@ fun month_lookup(num : int) =
 fun date_to_string(date : (int * int * int))=
   month_lookup(#2 date) ^ " " ^ Int.toString(#3 date) ^ ", " ^ Int.toString(#1 date)
 
+fun number_before_reaching_sum(num : int, elements : int list)=
+  let
+    fun keep_sum(num : int, elements : int list, location : int)= 
+      if null elements then
+        location
+      else
+        if num - hd(elements) <= 0 then location
+        else keep_sum(num - hd(elements), tl(elements), location + 1)
+  in
+    keep_sum(num, elements, 0)
+  end
 
+
+fun what_month(num : int)= 
+  let
+    val days = [31,28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+  in
+    number_before_reaching_sum(num, days) + 1
+  end
+
+fun count_up(from : int, to : int)= 
+  if from = to
+  then [ to ]
+  else from :: count_up(from + 1, to)
+
+fun convert_to_months(ints : int list)= 
+  if null ints then
+    []
+  else
+    what_month(hd(ints)) :: convert_to_months(tl(ints))
+
+
+fun month_range(from : int, to : int)= 
+  let
+    val days = [31,28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+  in
+    convert_to_months(count_up(from, to))
+  end
