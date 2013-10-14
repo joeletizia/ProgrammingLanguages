@@ -1,10 +1,12 @@
+(* is_older((2011,4,28),(2012,2,28)) *)
+
 fun is_older(foo : (int * int * int), bar : (int * int * int)) = 
   if #1 foo > #1 bar 
   then false
   else 
-    if #2 foo > #2 bar then false
+    if #2 foo > #2 bar andalso #1 foo = #1 bar then false
     else
-      if #3 foo >= #3 bar then false
+      if #3 foo >= #3 bar andalso #2 foo = #2 bar andalso #1 foo = #1 bar then false
       else true
 
 fun number_in_month(dates : (int * int * int) list, month : int) = 
@@ -110,3 +112,15 @@ fun month_range(from : int, to : int)=
   in
     convert_to_months(count_up(from, to))
   end
+
+fun oldest(dates : (int * int * int) list) =
+  if null dates
+  then NONE
+  else
+    let val tl_ans = oldest(tl(dates))
+    in
+      if isSome(tl_ans) andalso is_older(valOf tl_ans, hd(dates))
+      then tl_ans
+      else SOME(hd(dates))
+    end
+
